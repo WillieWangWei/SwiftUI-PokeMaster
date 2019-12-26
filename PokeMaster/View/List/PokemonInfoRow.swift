@@ -11,7 +11,7 @@ import SwiftUI
 struct PokemonInfoRow: View {
     
     let model: PokemonViewModel
-    @State var expanded: Bool = false
+    let expanded: Bool
     
     var body: some View {
         
@@ -83,9 +83,6 @@ struct PokemonInfoRow: View {
                     blendDuration: 0
                 )
         )
-            .onTapGesture {
-                self.expanded.toggle()
-        }
     }
 }
 
