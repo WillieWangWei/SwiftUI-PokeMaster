@@ -14,6 +14,18 @@ extension PokemonInfoPanel {
         
         let model: PokemonViewModel
         
+        var body: some View {
+            HStack(spacing: 18) {
+                pokemonIcon
+                nameSpecies
+                verticalDivider
+                VStack(spacing: 12) {
+                    bodyStatus
+                    typeInfo
+                }
+            }
+        }
+        
         var pokemonIcon: some View {
             Image("Pokemon-\(model.id)")
                 .resizable()
@@ -75,18 +87,6 @@ extension PokemonInfoPanel {
                         .foregroundColor(.white)
                         .background(type.color)
                         .cornerRadius(7)
-                }
-            }
-        }
-        
-        var body: some View {
-            HStack(spacing: 18) {
-                pokemonIcon
-                nameSpecies
-                verticalDivider
-                VStack(spacing: 12) {
-                    bodyStatus
-                    typeInfo
                 }
             }
         }

@@ -15,11 +15,11 @@ struct BlurView: UIViewRepresentable {
     
     func makeUIView(context: UIViewRepresentableContext<BlurView>) -> UIView {
         
-        let view = UIView(frame: .zero)
+        let view = UIView()
         view.backgroundColor = .clear
         
-        let blurEffect = UIBlurEffect(style: style)
-        let blurView = UIVisualEffectView(effect: blurEffect)
+        let blurView = UIVisualEffectView()
+        blurView.tag = 1
         blurView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(blurView)
         
@@ -31,7 +31,12 @@ struct BlurView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<BlurView>) {}
+    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<BlurView>) {
+        
+        if let blurView = uiView.viewWithTag(1) as? UIVisualEffectView {
+            blurView.effect = UIBlurEffect(style: style)
+        }
+    }
 }
 
 extension View {

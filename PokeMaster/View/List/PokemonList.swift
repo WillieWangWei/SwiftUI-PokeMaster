@@ -10,10 +10,16 @@ import SwiftUI
 
 struct PokemonList: View {
     
-    @State var expandingIndex: Int?
+    @State private var expandingIndex: Int?
+    @State private var searchKey: String = ""
     
     var body: some View {
+        
         ScrollView {
+            
+            TextField("筛选", text: $searchKey)
+                .padding(.horizontal)
+            
             ForEach(PokemonViewModel.all) { pokemon in
                 PokemonInfoRow(
                     model: pokemon,
