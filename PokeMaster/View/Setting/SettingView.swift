@@ -26,6 +26,9 @@ struct SettingView: View {
             optionSection
             actionSection
         }
+        .alert(item: settingsBinding.loginError) { error in
+            Alert(title: Text(error.localizedDescription))
+        }
     }
     
     var accountSection: some View {
@@ -40,7 +43,7 @@ struct SettingView: View {
                             Text($0.text)
                         }
                 }
-                .pickerStyle(DefaultPickerStyle())
+                .pickerStyle(SegmentedPickerStyle())
                 
                 TextField("电子邮箱", text: settingsBinding.email)
                 SecureField("密码", text: settingsBinding.password)
@@ -49,18 +52,21 @@ struct SettingView: View {
                     SecureField("确认密码", text: settingsBinding.verifyPassword)
                 }
 
-                Button(settings.accountBehavior.text) {
-                    self.store.dispatch(
-                        .login(email: self.settings.email, password: self.settings.password
+                if settings.loginRequesting {
+                    ActivityIndicatorView()
+                } else {
+                    Button(settings.accountBehavior.text) {
+                        self.store.dispatch(
+                            .login(email: self.settings.email, password: self.settings.password)
                         )
-                    )
+                    }
                 }
                 
             } else {
                 
                 Text(settings.loginUser!.email)
                 Button("注销") {
-                    print("注销")
+                    self.store.dispatch(.resign)
                 }
             }
         }

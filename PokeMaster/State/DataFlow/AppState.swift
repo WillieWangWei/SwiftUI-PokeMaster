@@ -19,13 +19,17 @@ extension AppState {
             case login
         }
         
-        enum Sorting: CaseIterable {
+        enum Sorting: Int, CaseIterable {
             case id
             case name
             case color
             case favorite
         }
         
+        var loginRequesting: Bool = false
+        var loginError: AppError?
+        
+        @FileStorage(directory: .documentDirectory, fileName: "user.json")
         var loginUser: User?
         
         var accountBehavior: AccountBehavior = .login
@@ -33,8 +37,12 @@ extension AppState {
         var password: String = ""
         var verifyPassword: String = ""
         
-        var showEnglishName: Bool = true
-        var sorting: Sorting = .id
+        @UserDefaultsBoolStorage(key: "showEnglishName")
+        var showEnglishName: Bool
+        
+        @UserDefaultsSortingStorage(key: "sorting")
+        var sorting: Sorting
+        
         var showFavoriteOnly: Bool = false
     }
 }
