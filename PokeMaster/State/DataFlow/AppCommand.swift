@@ -13,7 +13,7 @@ protocol AppCommand {
     func execute(in store: Store)
 }
 
-var token: AnyCancellable?
+let disposeBag: DisposeBag = DisposeBag()
 
 struct LoginAppCommand: AppCommand {
     let email: String
@@ -21,7 +21,7 @@ struct LoginAppCommand: AppCommand {
     
     func execute(in store: Store) {
         
-        token = LoginRequest(email: email, password: password)
+        LoginRequest(email: email, password: password)
             .publisher
             .sink(
                 receiveCompletion: { complete in
@@ -36,7 +36,7 @@ struct LoginAppCommand: AppCommand {
                         .accountBehaviorDone(result: .success(user))
                     )
             }
-        )
+        ).add(to: disposeBag)
     }
 }
 
@@ -47,5 +47,28 @@ struct WriteUserAppCommand: AppCommand {
         try? FileHelper.writeJSON(user,
                                   to: .documentDirectory,
                                   fileName: "user.json")
+    }
+}
+
+struct LoadPokemonsCommand: AppCommand {
+    
+    func execute(in store: Store) {
+        
+        LoadPokemonRequest
+            .all
+            .sink(
+                receiveCompletion: { complete in
+                    if case .failure(let error) = complete {
+                        store.dispatch(
+                            .loadPokemonsDone(result: .failure(error))
+                        )
+                    }
+            },
+                receiveValue: { value in
+                    store.dispatch(
+                        .loadPokemonsDone(result: .success(value))
+                    )
+            }
+        ).add(to: disposeBag)
     }
 }

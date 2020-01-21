@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PokemonList: View {
     
+    @EnvironmentObject var store: Store
     @State private var expandingIndex: Int?
     @State private var searchKey: String = ""
     
@@ -20,7 +21,7 @@ struct PokemonList: View {
             TextField("筛选", text: $searchKey)
                 .padding(.horizontal)
             
-            ForEach(PokemonViewModel.all) { pokemon in
+            ForEach(store.appState.pokemonList.allPokemonsByID) { pokemon in
                 PokemonInfoRow(
                     model: pokemon,
                     expanded: self.expandingIndex == pokemon.id
@@ -34,12 +35,6 @@ struct PokemonList: View {
                 }
             }
         }
-//        .overlay(
-//            VStack {
-//                Spacer()
-//                PokemonInfoPanel(model: .sample(id: 1))
-//            }
-//        )
-            .edgesIgnoringSafeArea(.bottom)
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
