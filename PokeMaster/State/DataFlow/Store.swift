@@ -14,13 +14,26 @@ class Store: ObservableObject {
     var disposeBag = DisposeBag()
     
     init() {
+        initData()
         setupObservers()
     }
     
+    func initData() {
+        if appState.settings.exsistUsers == nil {
+            appState.settings.exsistUsers = [User]()
+        }
+    }
+    
     func setupObservers() {
+        
         appState.settings.checker.isEmailValid
             .sink { isValid in
                 self.dispatch(.emailValid(valid: isValid))
+        }.add(to: disposeBag)
+        
+        appState.settings.checker.isPasswordValid
+            .sink { isValid in
+                self.dispatch(.passwordValid(valid: isValid))
         }.add(to: disposeBag)
     }
     
@@ -50,13 +63,8 @@ class Store: ObservableObject {
         
         switch action {
             
-        case .login(let email, let password):
-            if newState.settings.loginRequesting { break }
-            newState.settings.loginRequesting = true
-            appCommand = LoginAppCommand(email: email, password: password)
-            
         case .accountBehaviorDone(let result):
-            newState.settings.loginRequesting = false
+            newState.settings.accountBehaviorRequesting = false
             switch result {
             case .success(let user):
                 newState.settings.loginUser = user
@@ -64,11 +72,27 @@ class Store: ObservableObject {
                 newState.settings.loginError = error
             }
             
-        case .resign:
-            newState.settings.loginUser = nil
-            
         case .emailValid(let valid):
             newState.settings.isEmailValid = valid
+            
+        case .passwordValid(let valid):
+            newState.settings.isPasswordValid = valid
+            
+        case .register(let email, let password):
+            if newState.settings.accountBehaviorRequesting { break }
+            newState.settings.accountBehaviorRequesting = true
+            appCommand = RegisterAppCommand(email: email, password: password)
+            
+        case .registerDone(let user):
+            newState.settings.exsistUsers?.append(user)
+            
+        case .login(let email, let password):
+            if newState.settings.accountBehaviorRequesting { break }
+            newState.settings.accountBehaviorRequesting = true
+            appCommand = LoginAppCommand(email: email, password: password)
+            
+        case .resign:
+            newState.settings.loginUser = nil
             
         case .loadPokemons:
             if newState.pokemonList.loadingPokemons { break }

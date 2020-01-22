@@ -54,14 +54,21 @@ struct SettingView: View {
                     SecureField("确认密码", text: settingsBinding.checker.verifyPassword)
                 }
 
-                if settings.loginRequesting {
+                if settings.accountBehaviorRequesting {
                     ActivityIndicatorView()
                 } else {
                     Button(settings.checker.accountBehavior.text) {
-                        self.store.dispatch(
-                            .login(email: self.settings.checker.email, password: self.settings.checker.password)
-                        )
+                        if self.settings.checker.accountBehavior == .register {
+                            self.store.dispatch(
+                                .register(email: self.settings.checker.email, password: self.settings.checker.password)
+                            )
+                        } else {
+                            self.store.dispatch(
+                                .login(email: self.settings.checker.email, password: self.settings.checker.password)
+                            )
+                        }
                     }
+                    .disabled(!(settings.isEmailValid && settings.isPasswordValid))
                 }
                 
             } else {

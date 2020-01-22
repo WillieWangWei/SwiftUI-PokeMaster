@@ -17,7 +17,10 @@ struct AppState {
 extension AppState {
     
     struct PokemonList {
+        
+        @FileStorage(directory: .cachesDirectory, fileName: "pokemons.json")
         var pokemons: [Int: PokemonViewModel]?
+        
         var loadingPokemons = false
         var allPokemonsByID: [PokemonViewModel] {
             guard let pokemons = pokemons?.values else { return [] }
@@ -47,49 +50,43 @@ extension AppState {
             @Published var verifyPassword = ""
             
             var isEmailValid: AnyPublisher<Bool, Never> {
-                
-                let emailLocalValid = $email.map { $0.isValidEmailAddress }
-                let canSkipRemoteVerify = $accountBehavior.map { $0 == .login }
-                
-                let remoteVerify = $email
+                $email
                     .debounce(for: .milliseconds(500),
                               scheduler: DispatchQueue.main)
                     .removeDuplicates()
                     .flatMap { email -> AnyPublisher<Bool, Never> in
-                        let validEmail = email.isValidEmailAddress
-                        let canSkip = self.accountBehavior == .login
-                        
-                        switch (validEmail, canSkip) {
-                            
-                        case (false, _):
+                        if email.isValidEmailAddress {
+                            return EmailCheckingRequest(email: email, accountBehavior: self.accountBehavior)
+                                .publisher
+                        } else {
                             return Just(false)
                                 .eraseToAnyPublisher()
-                            
-                        case (true, false):
-                            return EmailCheckingRequest(email: email)
-                                .publisher
-                                .eraseToAnyPublisher()
-                            
-                        case (true, true):
-                            return Just(true)
-                                .eraseToAnyPublisher()
-                        }
-                }
-                
-                return Publishers.CombineLatest3(emailLocalValid, canSkipRemoteVerify, remoteVerify)
-                    .map { $0 && ($1 || $2) }
+                        }}
+                    .eraseToAnyPublisher()
+            }
+            
+            var isPasswordValid: AnyPublisher<Bool, Never> {
+                Publishers.CombineLatest($password, $verifyPassword)
+                    .map { password, verifyPassword in
+                        if password.isEmpty || verifyPassword.isEmpty {
+                            return false
+                        } else {
+                            return password == verifyPassword
+                        }}
                     .eraseToAnyPublisher()
             }
         }
         
         var isEmailValid: Bool = false
-        var loginRequesting: Bool = false
+        var isPasswordValid: Bool = false
+        var accountBehaviorRequesting: Bool = false
         var loginError: AppError?
         
         @FileStorage(directory: .documentDirectory, fileName: "user.json")
         var loginUser: User?
         
-        var checker = AccountChecker()
+        @FileStorage(directory: .documentDirectory, fileName: "validUsers.json")
+        var exsistUsers: [User]?
         
         @UserDefaultsBoolStorage(key: "showEnglishName")
         var showEnglishName: Bool
@@ -97,6 +94,9 @@ extension AppState {
         @UserDefaultsSortingStorage(key: "sorting")
         var sorting: Sorting
         
-        var showFavoriteOnly: Bool = false
+        @UserDefaultsBoolStorage(key: "showFavoriteOnly")
+        var showFavoriteOnly: Bool
+        
+        var checker = AccountChecker()
     }
 }

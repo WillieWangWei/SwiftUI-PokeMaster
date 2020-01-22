@@ -15,17 +15,42 @@ protocol AppCommand {
 
 let disposeBag: DisposeBag = DisposeBag()
 
+struct RegisterAppCommand: AppCommand {
+    let email: String
+    let password: String
+    
+    func execute(in store: Store) {
+        RegisterRequest(email: email, password: password)
+            .publisher
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    store.dispatch(
+                        .accountBehaviorDone(result: .failure(error))
+                    )
+                }
+            },
+                  receiveValue: { user in
+                    store.dispatch(
+                        .registerDone(user: user)
+                    )
+                    store.dispatch(
+                        .accountBehaviorDone(result: .success(user))
+                    )
+            }
+        ).add(to: disposeBag)
+    }
+}
+
 struct LoginAppCommand: AppCommand {
     let email: String
     let password: String
     
     func execute(in store: Store) {
-        
         LoginRequest(email: email, password: password)
             .publisher
             .sink(
-                receiveCompletion: { complete in
-                    if case .failure(let error) = complete {
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
                         store.dispatch(
                             .accountBehaviorDone(result: .failure(error))
                         )
@@ -53,12 +78,11 @@ struct WriteUserAppCommand: AppCommand {
 struct LoadPokemonsCommand: AppCommand {
     
     func execute(in store: Store) {
-        
         LoadPokemonRequest
             .all
             .sink(
-                receiveCompletion: { complete in
-                    if case .failure(let error) = complete {
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
                         store.dispatch(
                             .loadPokemonsDone(result: .failure(error))
                         )

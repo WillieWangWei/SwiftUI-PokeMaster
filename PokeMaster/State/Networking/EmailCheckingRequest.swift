@@ -11,7 +11,8 @@ import Combine
 
 struct EmailCheckingRequest {
     let email: String
-
+    let accountBehavior: AppState.Settings.AccountBehavior
+    
     var publisher: AnyPublisher<Bool, Never> {
         
         Future { promise in
@@ -20,11 +21,14 @@ struct EmailCheckingRequest {
                 .global()
                 .asyncAfter(deadline: .now() + 0.5) {
                     
-                if self.email.lowercased() == "123@123.com" {
-                    promise(.success(true))
-                } else {
-                    promise(.success(false))
-                }
+                    switch self.accountBehavior {
+                        
+                    case .register:
+                        promise(.success(self.email.isValidEmailAddress))
+                        
+                    case .login:
+                        promise(.success(self.email.isValidEmailAddress))
+                    }
             }
         }
         .receive(on: DispatchQueue.main)
