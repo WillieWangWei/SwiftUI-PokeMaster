@@ -106,7 +106,9 @@ struct SettingView: View {
 
         Section() {
             Button("清空缓存") {
-
+                self.store.dispatch(
+                    .cleanCache
+                )
             }
             .foregroundColor(.red)
         }

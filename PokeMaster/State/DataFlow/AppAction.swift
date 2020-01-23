@@ -9,6 +9,10 @@
 import Foundation
 
 enum AppAction {
+    
+    case loadPokemons
+    case loadPokemonsDone(result: Result<[PokemonViewModel], AppError>)
+    
     case emailValid(valid: Bool)
     case passwordValid(valid: Bool)
     case register(email: String, password: String)
@@ -16,6 +20,5 @@ enum AppAction {
     case login(email: String, password: String)
     case accountBehaviorDone(result: Result<User, AppError>)
     case resign
-    case loadPokemons
-    case loadPokemonsDone(result: Result<[PokemonViewModel], AppError>)
+    case cleanCache
 }

@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 struct AppState {
-    var settings = Settings()
     var pokemonList = PokemonList()
+    var settings = Settings()
 }
 
 extension AppState {

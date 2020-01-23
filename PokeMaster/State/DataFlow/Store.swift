@@ -63,6 +63,20 @@ class Store: ObservableObject {
         
         switch action {
             
+        case .loadPokemons:
+            if newState.pokemonList.loadingPokemons { break }
+            newState.pokemonList.loadingPokemons = true
+            appCommand = LoadPokemonsCommand()
+            
+        case .loadPokemonsDone(let result):
+            newState.pokemonList.loadingPokemons = false
+            switch result {
+            case .success(let models):
+                newState.pokemonList.pokemons = Dictionary(uniqueKeysWithValues: models.map { ($0.id, $0) } )
+            case .failure(let error):
+                print(error)
+            }
+            
         case .accountBehaviorDone(let result):
             newState.settings.accountBehaviorRequesting = false
             switch result {
@@ -94,19 +108,12 @@ class Store: ObservableObject {
         case .resign:
             newState.settings.loginUser = nil
             
-        case .loadPokemons:
-            if newState.pokemonList.loadingPokemons { break }
-            newState.pokemonList.loadingPokemons = true
-            appCommand = LoadPokemonsCommand()
-            
-        case .loadPokemonsDone(let result):
-            newState.pokemonList.loadingPokemons = false
-            switch result {
-            case .success(let models):
-                newState.pokemonList.pokemons = Dictionary(uniqueKeysWithValues: models.map { ($0.id, $0) } )
-            case .failure(let error):
-                print(error)
-            }
+        case .cleanCache:
+            newState.pokemonList.pokemons = nil
+            newState.settings.exsistUsers = nil
+            newState.settings.showEnglishName = false
+            newState.settings.sorting = .id
+            newState.settings.showFavoriteOnly = false
         }
         
         return (newState, appCommand)
