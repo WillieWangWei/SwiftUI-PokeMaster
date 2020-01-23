@@ -11,10 +11,9 @@ import Combine
 import SwiftUI
 
 struct RegisterRequest {
-    @EnvironmentObject var store: Store
-    
     let email: String
     let password: String
+    let store: Store
     
     var publisher: AnyPublisher<User, AppError> {
         
@@ -22,13 +21,13 @@ struct RegisterRequest {
             
             DispatchQueue
                 .global()
-                .asyncAfter(deadline: .now() + 1.5) {
+                .asyncAfter(deadline: .now() + 1) {
                     
                     if self.store.appState.settings.exsistUsers?.contains(where: { $0.email == self.email }) ?? false {
                         promise(.failure(.exsistEmail))
                         
                     } else {
-                        let user = User(email: self.email, favoritePokemonIDs: [])
+                        let user = User(email: self.email, password: self.password, favoritePokemonIDs: [])
                         promise(.success(user))
                     }
             }

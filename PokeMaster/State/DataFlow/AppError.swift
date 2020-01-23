@@ -23,7 +23,7 @@ extension AppError: LocalizedError {
         
         switch self {
         case .passwordWrong:
-            return "密码错误"
+            return "邮箱或密码错误"
         case .exsistEmail:
             return "此邮箱已注册"
         case .networkingFailed(let error):

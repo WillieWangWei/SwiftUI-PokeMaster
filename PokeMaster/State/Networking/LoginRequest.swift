@@ -12,6 +12,7 @@ import Combine
 struct LoginRequest {
     let email: String
     let password: String
+    let store: Store
     
     var publisher: AnyPublisher<User, AppError> {
         
@@ -19,10 +20,10 @@ struct LoginRequest {
             
             DispatchQueue
                 .global()
-                .asyncAfter(deadline: .now() + 1.5) {
+                .asyncAfter(deadline: .now() + 1) {
                     
-                    if self.password == "123" {
-                        let user = User(email: self.email, favoritePokemonIDs: [])
+                    if let user = self.store.appState.settings.exsistUsers?
+                        .first(where: { $0.email == self.email && $0.password == self.password}) {
                         promise(.success(user))
                     } else {
                         promise(.failure(.passwordWrong))

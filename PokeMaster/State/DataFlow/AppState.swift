@@ -50,7 +50,10 @@ extension AppState {
             @Published var verifyPassword = ""
             
             var isEmailValid: AnyPublisher<Bool, Never> {
-                $email
+                
+                let canSkip = $accountBehavior.map { $0 == .login }
+                
+                let emailValid = $email
                     .debounce(for: .milliseconds(500),
                               scheduler: DispatchQueue.main)
                     .removeDuplicates()
@@ -63,17 +66,25 @@ extension AppState {
                                 .eraseToAnyPublisher()
                         }}
                     .eraseToAnyPublisher()
+                
+                return Publishers.CombineLatest(canSkip, emailValid)
+                    .map { $0 || $1 }
+                    .eraseToAnyPublisher()
             }
             
             var isPasswordValid: AnyPublisher<Bool, Never> {
-                Publishers.CombineLatest($password, $verifyPassword)
-                    .map { password, verifyPassword in
-                        if password.isEmpty || verifyPassword.isEmpty {
-                            return false
+                Publishers.CombineLatest3($password, $verifyPassword, $accountBehavior)
+                    .map { password, verifyPassword, accountBehavior in
+                        if accountBehavior == .login {
+                            return true
                         } else {
-                            return password == verifyPassword
-                        }}
-                    .eraseToAnyPublisher()
+                            if password.isEmpty || verifyPassword.isEmpty {
+                                return false
+                            } else {
+                                return password == verifyPassword
+                            }}
+                }
+                .eraseToAnyPublisher()
             }
         }
         

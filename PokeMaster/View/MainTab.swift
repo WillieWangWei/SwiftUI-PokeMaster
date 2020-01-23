@@ -16,7 +16,7 @@ struct MainTab: View {
             
             PokemonRootView().tabItem {
                 Image(systemName: "list.bullet.below.rectangle")
-                Text("asd")
+                Text("首页")
             }
             
             SettingRootView().tabItem {

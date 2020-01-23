@@ -20,7 +20,7 @@ struct RegisterAppCommand: AppCommand {
     let password: String
     
     func execute(in store: Store) {
-        RegisterRequest(email: email, password: password)
+        RegisterRequest(email: email, password: password, store: store)
             .publisher
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
@@ -37,7 +37,8 @@ struct RegisterAppCommand: AppCommand {
                         .accountBehaviorDone(result: .success(user))
                     )
             }
-        ).add(to: disposeBag)
+        )
+            .add(to: disposeBag)
     }
 }
 
@@ -46,7 +47,7 @@ struct LoginAppCommand: AppCommand {
     let password: String
     
     func execute(in store: Store) {
-        LoginRequest(email: email, password: password)
+        LoginRequest(email: email, password: password, store: store)
             .publisher
             .sink(
                 receiveCompletion: { completion in
