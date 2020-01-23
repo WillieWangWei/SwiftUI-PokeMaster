@@ -16,6 +16,19 @@ struct PokemonRootView: View {
             if store.appState.pokemonList.pokemons == nil {
                 Text("Loading...")
                     .onAppear { self.store.dispatch(.loadPokemons) }
+            } else if store.appState.pokemonList.error != nil {
+                Button(action: {
+                    self.store.dispatch(.loadPokemons)
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                    Text("Retry")
+                }
+                .foregroundColor(.gray)
+                .padding(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
             } else {
                 PokemonList() .navigationBarTitle("宝可梦列表")
             }

@@ -20,6 +20,7 @@ extension AppState {
         
         @FileStorage(directory: .cachesDirectory, fileName: "pokemons.json")
         var pokemons: [Int: PokemonViewModel]?
+        var error: AppError?
         
         var loadingPokemons = false
         var allPokemonsByID: [PokemonViewModel] {

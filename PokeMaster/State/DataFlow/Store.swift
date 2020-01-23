@@ -74,7 +74,7 @@ class Store: ObservableObject {
             case .success(let models):
                 newState.pokemonList.pokemons = Dictionary(uniqueKeysWithValues: models.map { ($0.id, $0) } )
             case .failure(let error):
-                print(error)
+                newState.pokemonList.error = error
             }
             
         case .accountBehaviorDone(let result):

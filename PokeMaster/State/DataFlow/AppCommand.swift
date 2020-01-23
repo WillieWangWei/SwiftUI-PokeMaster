@@ -15,6 +15,28 @@ protocol AppCommand {
 
 let disposeBag: DisposeBag = DisposeBag()
 
+struct LoadPokemonsCommand: AppCommand {
+    
+    func execute(in store: Store) {
+        LoadPokemonRequest
+            .all
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        store.dispatch(
+                            .loadPokemonsDone(result: .failure(error))
+                        )
+                    }
+            },
+                receiveValue: { value in
+                    store.dispatch(
+                        .loadPokemonsDone(result: .success(value))
+                    )
+            }
+        ).add(to: disposeBag)
+    }
+}
+
 struct RegisterAppCommand: AppCommand {
     let email: String
     let password: String
@@ -73,27 +95,5 @@ struct WriteUserAppCommand: AppCommand {
         try? FileHelper.writeJSON(user,
                                   to: .documentDirectory,
                                   fileName: "user.json")
-    }
-}
-
-struct LoadPokemonsCommand: AppCommand {
-    
-    func execute(in store: Store) {
-        LoadPokemonRequest
-            .all
-            .sink(
-                receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
-                        store.dispatch(
-                            .loadPokemonsDone(result: .failure(error))
-                        )
-                    }
-            },
-                receiveValue: { value in
-                    store.dispatch(
-                        .loadPokemonsDone(result: .success(value))
-                    )
-            }
-        ).add(to: disposeBag)
     }
 }
