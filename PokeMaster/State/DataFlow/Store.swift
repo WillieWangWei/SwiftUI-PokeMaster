@@ -77,6 +77,20 @@ class Store: ObservableObject {
                 newState.pokemonList.error = error
             }
             
+        case .loadAbilities(let pokemon):
+            appCommand = LoadPokemonAbilitiesCommand(pokemon: pokemon)
+            
+        case .loadAbilitiesDone(let result):
+            switch result {
+            case .success(let models):
+                newState.pokemonList.abilities = Dictionary(uniqueKeysWithValues: models.map { ($0.id, $0) } )
+            case .failure(let error):
+                newState.pokemonList.error = error
+            }
+            
+        case .toggleListSelection(let index):
+            newState.pokemonList.expandingIndex = index
+            
         case .accountBehaviorDone(let result):
             newState.settings.accountBehaviorRequesting = false
             switch result {

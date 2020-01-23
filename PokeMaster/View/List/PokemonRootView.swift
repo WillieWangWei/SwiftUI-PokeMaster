@@ -30,7 +30,7 @@ struct PokemonRootView: View {
                         .stroke(Color.gray, lineWidth: 1)
                 )
             } else {
-                PokemonList() .navigationBarTitle("宝可梦列表")
+                PokemonList().navigationBarTitle("宝可梦列表")
             }
         }
     }

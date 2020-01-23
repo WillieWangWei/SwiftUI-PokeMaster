@@ -37,6 +37,29 @@ struct LoadPokemonsCommand: AppCommand {
     }
 }
 
+struct LoadPokemonAbilitiesCommand: AppCommand {
+    let pokemon: Pokemon
+    
+    func execute(in store: Store) {
+        LoadPokemonAbilitiesRequest(pokemon: pokemon)
+            .publisher
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        store.dispatch(
+                            .loadAbilitiesDone(result: .failure(error))
+                        )
+                    }
+            },
+                receiveValue: { value in
+                    store.dispatch(
+                        .loadAbilitiesDone(result: .success(value))
+                    )
+            }
+        ).add(to: disposeBag)
+    }
+}
+
 struct RegisterAppCommand: AppCommand {
     let email: String
     let password: String

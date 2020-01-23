@@ -10,9 +10,12 @@ import SwiftUI
 import KingfisherSwiftUI
 
 struct PokemonInfoRow: View {
+    @EnvironmentObject var store: Store
     
     let model: PokemonViewModel
     let expanded: Bool
+    
+    @State var isShowingPanel: Bool = false
     
     var body: some View {
         
@@ -48,11 +51,15 @@ struct PokemonInfoRow: View {
                 Button(action: {}) {
                     Image(systemName: "chart.bar")
                         .modifier(ToolButtonModifier())
-                    
                 }
-                Button(action: {}) {
+                Button(action: {
+                    self.isShowingPanel = true
+                }) {
                     Image(systemName: "info.circle")
                         .modifier(ToolButtonModifier())
+                }.sheet(isPresented: $isShowingPanel) {
+                    PokemonInfoPanel(model: self.model)
+                        .environmentObject(self.store)
                 }
             }
             .padding(.bottom, 12)

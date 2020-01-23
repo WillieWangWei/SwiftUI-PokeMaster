@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct SettingView: View {
-    
     @EnvironmentObject var store: Store
     
     var settingsBinding: Binding<AppState.Settings> {

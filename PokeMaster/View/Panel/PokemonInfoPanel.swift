@@ -9,13 +9,10 @@
 import SwiftUI
 
 struct PokemonInfoPanel: View {
+    @EnvironmentObject var store: Store
     
     let model: PokemonViewModel
     @State var darkBlur = false
-    
-    var abilities: [AbilityViewModel] {
-        AbilityViewModel.sample(pokemonID: model.id)
-    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -26,10 +23,7 @@ struct PokemonInfoPanel: View {
             Header(model: model)
             pokemonDescription
             Divider()
-            AbilityList(
-                model: model,
-                abilityModels: abilities)
-            
+            AbilityList(model: model, abilityModels: store.appState.pokemonList.abilityViewModels(for: model.pokemon))
         }
         .padding(
             EdgeInsets(

@@ -20,12 +20,23 @@ extension AppState {
         
         @FileStorage(directory: .cachesDirectory, fileName: "pokemons.json")
         var pokemons: [Int: PokemonViewModel]?
-        var error: AppError?
         
+        @FileStorage(directory: .cachesDirectory, fileName: "abilities.json")
+        var abilities: [Int: AbilityViewModel]?
+        
+        var error: AppError?
         var loadingPokemons = false
+        
+        var expandingIndex: Int?
+        var searchText: String = ""
+        
         var allPokemonsByID: [PokemonViewModel] {
             guard let pokemons = pokemons?.values else { return [] }
             return pokemons.sorted { $0.id < $1.id }
+        }
+        
+        func abilityViewModels(for pokemon: Pokemon) -> [AbilityViewModel]? {
+            pokemon.abilities.map { AbilityViewModel(ability: Ability.sample(url: $0.ability.url)) }
         }
     }
     
