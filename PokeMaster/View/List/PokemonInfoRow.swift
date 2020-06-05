@@ -15,8 +15,6 @@ struct PokemonInfoRow: View {
     let model: PokemonViewModel
     let expanded: Bool
     
-    @State var isShowingPanel: Bool = false
-    
     var body: some View {
         
         VStack {
@@ -48,18 +46,16 @@ struct PokemonInfoRow: View {
                     Image(systemName: "star")
                         .modifier(ToolButtonModifier())
                 }
-                Button(action: {}) {
+                Button(action: {
+                    let target = !self.store.appState.pokemonList.selectionState.panelPresented
+                    self.store.dispatch(.togglePanelPresenting(presenting: target))
+                }) {
                     Image(systemName: "chart.bar")
                         .modifier(ToolButtonModifier())
                 }
-                Button(action: {
-                    self.isShowingPanel = true
-                }) {
+                Button(action: {}) {
                     Image(systemName: "info.circle")
                         .modifier(ToolButtonModifier())
-                }.sheet(isPresented: $isShowingPanel) {
-                    PokemonInfoPanel(model: self.model)
-                        .environmentObject(self.store)
                 }
             }
             .padding(.bottom, 12)

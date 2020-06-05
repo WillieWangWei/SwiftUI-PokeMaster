@@ -89,7 +89,17 @@ class Store: ObservableObject {
             }
             
         case .toggleListSelection(let index):
-            newState.pokemonList.expandingIndex = index
+            let expanding = newState.pokemonList.selectionState.expandingIndex
+            if expanding == index {
+                newState.pokemonList.selectionState.expandingIndex = nil
+                newState.pokemonList.selectionState.panelPresented = false
+            } else {
+                newState.pokemonList.selectionState.expandingIndex = index
+                newState.pokemonList.selectionState.panelIndex = index
+            }
+            
+        case .togglePanelPresenting(let presenting):
+            newState.pokemonList.selectionState.panelPresented = presenting
             
         case .accountBehaviorDone(let result):
             newState.settings.accountBehaviorRequesting = false

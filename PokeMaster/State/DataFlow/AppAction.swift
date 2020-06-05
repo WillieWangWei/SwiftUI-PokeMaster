@@ -15,6 +15,7 @@ enum AppAction {
     case loadAbilities(pokemon: Pokemon)
     case loadAbilitiesDone(result: Result<[AbilityViewModel], AppError>)
     case toggleListSelection(index: Int?)
+    case togglePanelPresenting(presenting: Bool)
     
     case emailValid(valid: Bool)
     case passwordValid(valid: Bool)

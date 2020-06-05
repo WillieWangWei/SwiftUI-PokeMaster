@@ -20,8 +20,10 @@ struct PokemonInfoPanel: View {
                 self.darkBlur.toggle()
             }
             topIndicator
-            Header(model: model)
-            pokemonDescription
+            Group {
+                Header(model: model)
+                pokemonDescription
+            }.animation(nil)
             Divider()
             AbilityList(model: model, abilityModels: store.appState.pokemonList.abilityViewModels(for: model.pokemon))
         }

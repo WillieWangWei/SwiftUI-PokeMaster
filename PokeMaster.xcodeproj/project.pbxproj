@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36361D9E2487D8D5007E81E9 /* OverlaySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36361D9D2487D8D5007E81E9 /* OverlaySheet.swift */; };
 		366E941C23D19CF80013DB9D /* MainTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E941B23D19CF80013DB9D /* MainTab.swift */; };
 		366E941F23D1B20E0013DB9D /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E941E23D1B20E0013DB9D /* Store.swift */; };
 		366E942123D1B24B0013DB9D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366E942023D1B24B0013DB9D /* AppState.swift */; };
@@ -111,6 +112,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		36361D9D2487D8D5007E81E9 /* OverlaySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheet.swift; sourceTree = "<group>"; };
 		366E941B23D19CF80013DB9D /* MainTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTab.swift; sourceTree = "<group>"; };
 		366E941E23D1B20E0013DB9D /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		366E942023D1B24B0013DB9D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 			children = (
 				36C875BF23D5939B000DF608 /* ActivityIndicatorView.swift */,
 				36D396F923B4D2F3003DD8FD /* BlurView.swift */,
+				36361D9D2487D8D5007E81E9 /* OverlaySheet.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -650,6 +653,7 @@
 				36CF425F23A3C4340072916D /* PokemonInfoRow.swift in Sources */,
 				36B5C67923D4417500A5D5E5 /* User.swift in Sources */,
 				366E942123D1B24B0013DB9D /* AppState.swift in Sources */,
+				36361D9E2487D8D5007E81E9 /* OverlaySheet.swift in Sources */,
 				36CF42F423A3C6D20072916D /* Sample.swift in Sources */,
 				36CF424B23A3C3D40072916D /* AppDelegate.swift in Sources */,
 				366E941F23D1B20E0013DB9D /* Store.swift in Sources */,

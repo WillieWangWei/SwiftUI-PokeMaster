@@ -9,38 +9,34 @@
 import SwiftUI
 
 struct PokemonList: View {
-    @EnvironmentObject var store: Store
     
-    var body: some View {
-        
-        ScrollView {
-            
-            TextField("筛选", text: $store.appState.pokemonList.searchText)
-                .padding(.horizontal)
-            
-            ForEach(store.appState.pokemonList.allPokemonsByID) { pokemon in
-                PokemonInfoRow(
-                    model: pokemon,
-                    expanded: self.store.appState.pokemonList.expandingIndex == pokemon.id
-                )
+    @EnvironmentObject var store: Store
+
+        var pokemonList: AppState.PokemonList { store.appState.pokemonList }
+
+        var body: some View {
+            ScrollView {
+                TextField("搜索", text: $store.appState.pokemonList.searchText.animation(nil))
+                    .frame(height: 40)
+                    .padding(.horizontal, 25)
+                ForEach(pokemonList.displayPokemons(with: store.appState.settings)) { pokemon in
+                    PokemonInfoRow(
+                        model: pokemon,
+                        expanded: self.pokemonList.selectionState.isExpanding(pokemon.id)
+                    )
                     .onTapGesture {
-                        if self.store.appState.pokemonList.expandingIndex == pokemon.id {
-                            self.store.dispatch(
-                                .toggleListSelection(index: nil)
-                            )
-                        } else {
-                            self.store.dispatch(
-                                .toggleListSelection(index: pokemon.id)
-                            )
-                            if self.store.appState.pokemonList.abilityViewModels(for: pokemon.pokemon) == nil {
-                                self.store.dispatch(
-                                    .loadAbilities(pokemon: pokemon.pokemon)
-                                )
-                            }
-                        }
+                        self.store.dispatch(.toggleListSelection(index: pokemon.id))
+                        self.store.dispatch(.loadAbilities(pokemon: pokemon.pokemon))
+                    }
                 }
+                Spacer()
+                    .frame(height: 8)
             }
         }
-        .edgesIgnoringSafeArea(.bottom)
     }
-}
+
+    struct PokemonList_Previews: PreviewProvider {
+        static var previews: some View {
+            PokemonList()
+        }
+    }
